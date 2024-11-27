@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Fun Games and Activities</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #008CBA;
+            color: white;
+            padding: 10px 20px;
+            margin: 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #005f73;
+        }
+
+        #game-container {
+            margin-top: 30px;
+        }
+
+        .tic-tac-toe-board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 5px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            background-color: #f4f4f4;
+            border: 2px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Welcome to the Fun Zone!</h1>
+        <p>Your go-to place for games and fun activities!</p>
+    </header>
+
+    <div class="games">
+        <h2>Select a game to play:</h2>
+        <button id="play-rock-paper-scissors">Rock, Paper, Scissors</button>
+        <button id="play-quiz">Fun Quiz</button>
+        <button id="play-tic-tac-toe">Tic-Tac-Toe</button>
+    </div>
+
+    <div id="game-container"></div>
+
+    <script>
+        // Rock, Paper, Scissors Game
+        document.getElementById('play-rock-paper-scissors').addEventListener('click', function() {
+            const gameContainer = document.getElementById('game-container');
+            gameContainer.innerHTML = `
+                <h3>Rock, Paper, Scissors</h3>
+                <p>Choose your move:</p>
+                <button class="rps-choice" data-choice="rock">Rock</button>
+                <button class="rps-choice" data-choice="paper">Paper</button>
+                <button class="rps-choice" data-choice="scissors">Scissors</button>
+                <p id="rps-result"></p>
+            `;
+
+            const choices = document.querySelectorAll('.rps-choice');
+            choices.forEach(choice => {
+                choice.addEventListener('click', function() {
+                    const userChoice = this.dataset.choice;
+                    const options = ['rock', 'paper', 'scissors'];
+                    const computerChoice = options[Math.floor(Math.random() * options.length)];
+
+                    let result = '';
+                    if (userChoice === computerChoice) {
+                        result = 'It\'s a tie!';
+                    } else if (
+                        (userChoice === 'rock' && computerChoice === 'scissors') ||
+                        (userChoice === 'paper' && computerChoice === 'rock') ||
+                        (userChoice === 'scissors' && computerChoice === 'paper')
+                    ) {
+                        result = 'You win!';
+                    } else {
+                        result = 'Computer wins!';
+                    }
+
+                    document.getElementById('rps-result').textContent = 
+                        `You chose ${userChoice}. Computer chose ${computerChoice}. ${result}`;
+                });
+            });
+        });
+
+        // Fun Quiz Game
+        document.getElementById('play-quiz').addEventListener('click', function() {
+            const gameContainer = document.getElementById('game-container');
+            gameContainer.innerHTML = `
+                <h3>Fun Quiz</h3>
+                <p>What is the capital of France?</p>
+                <button class="quiz-choice" data-answer="wrong">Berlin</button>
+                <button class="quiz-choice" data-answer="correct">Paris</button>
+                <button class="quiz-choice" data-answer="wrong">Rome</button>
+                <p id="quiz-result"></p>
+            `;
+
+            const quizChoices = document.querySelectorAll('.quiz-choice');
+            quizChoices.forEach(choice => {
+                choice.addEventListener('click', function() {
+                    const answer = this.dataset.answer;
+                    const result = (answer === 'correct') ? 'Correct!' : 'Wrong answer, try again!';
+                    document.getElementById('quiz-result').textContent = result;
+                });
+            });
+        });
+
+        // Tic-Tac-Toe Game
+        document.getElementById('play-tic-tac-toe').addEventListener('click', function() {
+            const gameContainer = document.getElementById('game-container');
+            gameContainer.innerHTML = `
+                <h3>Tic-Tac-Toe</h3>
+                <div class="tic-tac-toe-board">
+                    <div class="cell" data-index="0"></div>
+                    <div class="cell" data-index="1"></div>
+                    <div class="cell" data-index="2"></div>
+                    <div class="cell" data-index="3"></div>
+                    <div class="cell" data-index="4"></div>
+                    <div class="cell" data-index="5"></div>
+                    <div class="cell" data-index="6"></div>
+                    <div class="cell" data-index="7"></div>
+                    <div class="cell" data-index="8"></div>
+                </div>
+                <p id="ttt-result"></p>
+            `;
+
+            const board = Array(9).fill(null);
+            let currentPlayer = 'X';
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach(cell => {
+                cell.addEventListener('click', function() {
+                    const index = this.dataset.index;
+                    if (board[index] === null) {
+                        board[index] = currentPlayer;
+                        this.textContent = currentPlayer;
+                        if (checkWinner(board)) {
+                            document.getElementById('ttt-result').textContent = `${currentPlayer} wins!`;
+                            setTimeout(() => {
+                                board.fill(null);
+                                cells.forEach(cell => cell.textContent = '');
+                                document.getElementById('ttt-result').textContent = '';
+                            }, 2000);
+                        } else if (board.every(cell => cell !== null)) {
+                            document.getElementById('ttt-result').textContent = 'It\'s a tie!';
+                        }
+                        currentPlayer = (currentPlayer === 'X') ? 'O' : 'X';
+                    }
+                });
+            });
+
+            function checkWinner(board) {
+                const winningCombos = [
+                    [0, 1, 2],
+                    [3, 4, 5],
+                    [6, 7, 8],
+                    [0, 3, 6],
+                    [1, 4, 7],
+                    [2, 5, 8],
+                    [0, 4, 8],
+                    [2, 4, 6]
+                ];
+                return winningCombos.some(combo => 
+                    board[combo[0]] && board[combo[0]] === board[combo[1]] && board[combo[1]] === board[combo[2]]
+                );
+            }
+        });
+    </script>
+
+</body>
+</html>
